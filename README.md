@@ -52,6 +52,7 @@ Une page interactive affichant des **graphiques dynamiques et des tableaux inter
 Une animation visuelle simulant une **pluie de mots dynamique**, créant une expérience interactive unique.  
 
 🔗 **1- Accéder à la page (Words):** [Voir l'effet animé](https://krikounoureddine.github.io/Visualisation/RainWordsEffect.html) 
+
 🔗 **2- Accéder à la page (Characters):** [Voir l'effet animé](https://krikounoureddine.github.io/Visualisation/RainWordsEffect.html) 
 
 ---
