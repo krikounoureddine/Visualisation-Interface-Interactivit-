@@ -24,8 +24,8 @@ Cette page interactive permet d'explorer les **universités à travers le monde*
 - Leurs **publications scientifiques** et impact académique.  
 - Leurs **infrastructures** : date de création, nombre d'étudiants, facultés disponibles.  
 
-📂 **Accéder aux données :** [Tableau CSV](lien-vers-csv)  
-🔗 **Accéder à la page :** [Voir la visualisation](lien-vers-HTML)  
+📂 **Accéder aux données :** [Tableau CSV](https://github.com/krikounoureddine/Visualisation/blob/main/projet/BDD/univesit%C3%A9s%20du%20monde.csv)  
+🔗 **Accéder à la page :** [Voir la visualisation](https://krikounoureddine.github.io/Visualisation/projet/outil_perssonelle.html)  
 
 ---
 
@@ -43,15 +43,16 @@ Une page interactive affichant des **graphiques dynamiques et des tableaux inter
 - **Explorer des jeux de données** provenant de **fichiers CSV**.  
 - **Visualiser des graphiques hébergés sur des plateformes externes** (ex : Datawrapper).  
 
-📂 **Accéder aux données :** [Tableau CSV](lien-vers-csv)  
-🔗 **Accéder à la page :** [Voir la visualisation](lien-vers-HTML)  
+📂 **Accéder aux données :** [Tableau CSV](https://github.com/krikounoureddine/Visualisation/blob/main/projet/BDD/Visualisation_donn%C3%A9es_structur%C3%A9es.csv)  
+🔗 **Accéder à la page :** [Voir la visualisation](https://krikounoureddine.github.io/Visualisation/projet/Visualisation_donn%C3%A9es_structur%C3%A9es.html)  
 
 ---
 
-### 🌧️ **Effet de Pluie de Mots** (`RainWordsEffect.html`)  
+### 🌧️ **Effet de Pluie de Mots** (`Rain_Words_Effect.html`/'Rain_Characters_Effect.html')  
 Une animation visuelle simulant une **pluie de mots dynamique**, créant une expérience interactive unique.  
 
-🔗 **Accéder à la page :** [Voir l'effet animé](lien-vers-HTML)  
+🔗 **1- Accéder à la page (Words):** [Voir l'effet animé](https://krikounoureddine.github.io/Visualisation/RainWordsEffect.html) 
+🔗 **2- Accéder à la page (Characters):** [Voir l'effet animé](https://krikounoureddine.github.io/Visualisation/RainWordsEffect.html) 
 
 ---
 
@@ -60,7 +61,7 @@ Cette page permet :
 - **D'analyser un texte avec Voyant Tools** 📖  
 - **D'afficher les résultats sous forme de graphiques et de nuages de mots** ☁️📊  
 
-🔗 **Accéder à la page :** [Voir l'analyse textuelle](lien-vers-HTML)  
+🔗 **Accéder à la page :** [Voir l'analyse textuelle](https://krikounoureddine.github.io/Visualisation/GraphiquesVoyantTools.html)  
 
 ---
 
@@ -76,18 +77,8 @@ Cette page permet :
 ## 📂 Déploiement & Installation  
 
 1️⃣ **Cloner le projet**  
-```sh
- git clone https://github.com/ton-utilisateur/Visualisation.git 
-```
 2️⃣ **Ouvrir les fichiers HTML dans un navigateur**  
 3️⃣ **Assurez-vous que les fichiers CSV sont bien accessibles**  
-
----
-
-## 📩 Contact  
-
-📧 **Email :** contact@visualisation.com  
-🌐 **Site Web :** [www.visualisation.com](https://www.visualisation.com)  
 
 ---
 
