@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisation des Universités Françaises</title>
+    <link rel="icon" href="https://cdn-icons-png.freepik.com/256/11707/11707283.png?uid=R96932147&semt=ais_hybrid" type="image/svg+xml">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://img.freepik.com/premium-photo/concept-travel-adventure-traveller-lifestyle_185193-86879.jpg?w=900');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #3358ff;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #2980b9;
+            font-size: 2em;
+            margin-top: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            color: #000000;
+        }
+		
+		 /* File Input Styles */
+        #fileInput {
+            display: none; /* Hide default file input */
+        }
+
+        .file-label {
+            display: inline-block;
+            background-color: #4A90E2;
+            color: white;
+            padding: 12px 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        /* Style des boutons de téléchargement */
+        .download-btn {
+            display: inline-block;
+            background-color: #4A90E2;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            background-color: #357ABD;
+        }
+
+        .download-btn:active {
+            background-color: #2C6FA2;
+        }
+
+        /* Container for Graphs */
+        .chart-container {
+            width: 80%;
+            margin: auto;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        canvas {
+            max-width: 150%;
+            height: 500px;
+        }
+		/* Table Styles */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4A90E2;
+            color: white;
+        }
+
+        td {
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+		
+        #map {
+            width: 90%;
+            height: 500px;
+            margin: 20px auto;
+            border: 2px solid #333;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+		.carousel-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px; /* Ajuste la distance entre le titre et le carrousel */
+}
+		.carousel {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .carousel-images {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-images img {
+            width: 100%;
+            flex-shrink: 0;
+        }
+        .carousel-buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .carousel-buttons button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+        .carousel-buttons button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .carousel-indicators {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+        }
+        .carousel-indicators span {
+            width: 10px;
+            height: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .carousel-indicators span.active {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Visualisation des Universités dans le monde</h1>
+
+	<div class="carousel-container">
+    <div class="carousel">
+        <div class="carousel-images">
+            <img src="https://offloadmedia.feverup.com/secrettoronto.co/wp-content/uploads/2024/06/12131106/20240611-u-of-toronto-1024x683.jpg" alt="Image 1">
+            <img src="https://d3d0lqu00lnqvz.cloudfront.net/media/media/UofT_cmh2315fl.jpg" alt="Image 2">
+            <img src="https://nouvelles.umontreal.ca/fileadmin/_processed_/csm_20230829_Cours_d_honneur_929f0eec32.jpg" alt="Image 3">
+            <img src="https://media.istockphoto.com/id/1065680966/fr/photo/university-of-british-columbia-%C3%A0-vancouver-au-canada.jpg?s=612x612&w=0&k=20&c=MgqXsPzGF9stFdYhbKseDvahG7ODBACibNgmqpLdsoE=" alt="Image 4">  
+			<img src="https://facts.net/wp-content/uploads/2023/09/15-captivating-facts-about-peking-university-1695573947.jpg" alt="Image 5">
+            <img src="https://indonesiaexpat.id/wp-content/uploads/2022/01/chinese-universtiy.jpg" alt="Image 6">
+            <img src="https://espanglish.info/sites/default/files/high_school/gallery/Beijing-Jiaotong-University-China-1.jpg" alt="Image 7">
+            <img src="https://lu.edu.qa/wp-content/uploads/2021/09/uuni.jpg" alt="Image 8">
+			<img src="https://img.lemde.fr/2017/09/26/0/0/2006/1305/664/0/75/0/a266322_12581-x8c9wa.zx4rt3xr.jpg" alt="Image 9">
+            <img src="https://www.europtimist.eu/app/uploads/2020/11/Campus-Universite%CC%81-e%CC%81tudier-17-06-08-CUS-Phototheque-%C2%A9-Bartosch-Salmanski-128db.fr-1393-1920x1280.jpg" alt="Image 10">
+            <img src="https://img-ccmbg-1.lefigaro.fr/YeqhUTgvxJ1noVJUsk5fKxpAiio=/1500x/smart/b1179092a11c4f3b9095ff35b1cdcc68/ccmcms-figaroetudiant/39480599.jpg" alt="Image 11">
+            <img src="https://www.maison-heinrich-heine.org/local/cache-gd2/cf/078e59631007d27cf4f6580816295e.jpg?1707348020" alt="Image 12">  
+			<img src="https://www.algerie.campusfrance.org/sites/pays/files/algerie/styles/mobile_rte_large/public/medias/images/2021-04/Universit%C3%A9%20de%20Perpignan.png?itok=TWec4398" alt="Image 13">
+            <img src="https://img.freepik.com/free-photo/amazing-shot-building-tuileries-garden-paris-france_181624-40952.jpg?t=st=1737749637~exp=1737753237~hmac=dfb3543a09b8993a47e3d51e89313cb24a3df1aa66fa669830d6b5132e064a2d&w=900" alt="Image 14">
+            <img src="https://landezine-award.com/wp-content/uploads/2023/05/1813_N593_indd.jpg" alt="Image 15">
+			<img src="https://www.healthcaremea.com/wp-content/uploads/2023/05/image1-53.jpg" alt="Image 16">
+            <img src="https://www.entes.com/yuklenenler/90/176.jpg" alt="Image 17">
+            <img src="https://img.freepik.com/premium-photo/lyon-city-hall_119101-138.jpg?w=900" alt="Image 18">
+        </div>
+        <div class="carousel-buttons">
+            <button id="prev">◀</button>
+            <button id="next">▶</button>
+        </div>
+        <div class="carousel-indicators"></div>
+    </div>
+</div>
+
+
+    <label for="fileInput" class="file-label">Choisir un fichier CSV</label>
+    <input type="file" id="fileInput" accept=".csv">
+    
+    <h2>Histogramme des Universités Françaises</h2>
+    <p>Ce graphique compare le nombre d'étudiants et le nombre de publications annuelles des universités en France.</p>
+    
+	<div class="chart-container">
+    <canvas id="barChart"></canvas>
+    <button id="zoomInBarChart" class="download-btn">Zoomer +</button>
+    <button id="zoomOutBarChart" class="download-btn">Zoomer -</button>
+    <button id="downloadBarChart" class="download-btn">Télécharger l'image</button>
+	</div>
+
+    <h2>Répartition du nombre de facultés par université</h2>
+    <p>Ce diagramme circulaire illustre la proportion Nombre de facultés dans chaque université.</p>
+    <div class="chart-container">
+        <canvas id="pieChart"></canvas>
+		 <button id="zoomInPieChart" class="download-btn">Zoomer +</button>
+		 <button id="zoomOutPieChart" class="download-btn">Zoomer -</button>
+        <button id="downloadPieChart" class="download-btn">Télécharger l'image</button>
+    </div>
+
+    <h2>Évolution  Date de création et de Publications</h2>
+    <p>Le graphique en ligne montre les tendances du nombre d'étudiants et des publications dans le temps.</p>
+    <div class="chart-container">
+        <canvas id="lineChart"></canvas>
+		 <button id="zoomInLineChart" class="download-btn">Zoomer +</button>
+		 <button id="zoomOutLineChart" class="download-btn">Zoomer -</button>
+        <button id="downloadLineChart" class="download-btn">Télécharger l'image</button>
+    </div>
+
+    <h2>Localisation des Universités sur la Carte</h2>
+    <p>Cette carte interactive vous permet de localiser géographiquement les universités de France.</p>
+    <div id="map"></div>
+<!-- Tableau Section -->
+    <h2>Tableau des Universités</h2>
+    <p>Voici les informations des universités françaises sous forme de tableau. Vous pouvez voir les détails sur chaque université, y compris le nombre d'étudiants et de publications.</p>
+    <div id="tableContainer">
+        <!-- Table will be dynamically inserted here -->
+    </div>
+    <script>
+	// Sélection des éléments HTML
+        const imagesContainer = document.querySelector('.carousel-images');
+        const images = document.querySelectorAll('.carousel-images img');
+        const prevButton = document.getElementById('prev');
+        const nextButton = document.getElementById('next');
+        const indicatorsContainer = document.querySelector('.carousel-indicators');
+
+        let currentIndex = 0;
+
+        // Initialisation des indicateurs
+        images.forEach((_, index) => {
+            const indicator = document.createElement('span');
+            indicator.dataset.index = index;
+            if (index === 0) indicator.classList.add('active');
+            indicatorsContainer.appendChild(indicator);
+        });
+
+        const indicators = document.querySelectorAll('.carousel-indicators span');
+
+        // Fonction pour mettre à jour l'affichage
+        function updateCarousel() {
+            imagesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            indicators[currentIndex].classList.add('active');
+        }
+
+        // Gestion des clics sur "Précédent" et "Suivant"
+        prevButton.addEventListener('click', () => {
+            currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
+            updateCarousel();
+        });
+
+        nextButton.addEventListener('click', () => {
+            currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
+            updateCarousel();
+        });
+
+        // Gestion des clics sur les indicateurs
+        indicators.forEach(indicator => {
+            indicator.addEventListener('click', () => {
+                currentIndex = parseInt(indicator.dataset.index);
+                updateCarousel();
+            });
+        });
+
+        // Auto-défilement toutes les 3 secondes
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateCarousel();
+        }, 3000);
+		
+        let universitiesData = [];
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                alert('Veuillez sélectionner un fichier CSV.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csvData = e.target.result;
+                universitiesData = parseCSV(csvData);
+                if (universitiesData) {
+                    createVisualizations(universitiesData);
+					displayTable(universitiesData);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        function parseCSV(csv) {
+            const rows = csv.split('\n').map(row => row.split(','));
+            if (rows.length < 2) {
+                alert('Le fichier CSV ne contient pas de données valides.');
+                return null;
+            }
+
+            const data = rows.slice(1).map(row => ({
+                Université: row[0].trim(),
+                DateCreation: row[1],
+                Etudiants: parseInt(row[2]),
+                Facultes: parseInt(row[3]),
+                Publications: parseInt(row[4]),
+                Classement: parseInt(row[5]),
+                Latitude: parseFloat(row[6]),
+                Longitude: parseFloat(row[7]),
+            }));
+
+            return data.filter(row => row.Université);
+        }
+
+        function createVisualizations(data) {
+            const labels = data.map(item => item.Université);
+            const etudiants = data.map(item => item.Etudiants);
+            const publications = data.map(item => item.Publications);
+            const facultes = data.map(item => item.Facultes);
+            const dateCreation = data.map(item => item.DateCreation);
+            const classement = data.map(item => item.Classement);
+
+            // Histogramme
+    const ctxBar = document.getElementById('barChart').getContext('2d');
+    const barChart = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                { label: 'Nombre d\'étudiants', data: etudiants, backgroundColor: 'rgba(75, 192, 192, 0.6)' },
+                { label: 'Nombre de publications', data: publications, backgroundColor: 'rgba(153, 102, 255, 0.6)' }
+            ]
+        },
+        options: {
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        wheel: {
+                            enabled: true
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'x'
+                    }
+                }
+            }
+        }
+    });
+
+    // Pie Chart
+    const ctxPie = document.getElementById('pieChart').getContext('2d');
+    const pieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Nombre de facultés',
+                data: facultes,
+                backgroundColor: labels.map(() => `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.6)`)
+            }]
+        },
+        options: {
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'xy'
+                    },
+                    zoom: {
+                        wheel: {
+                            enabled: true
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'xy'
+                    }
+                }
+            }
+        }
+    });
+
+    // Line Chart
+    const ctxLine = document.getElementById('lineChart').getContext('2d');
+    const lineChart = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                { label: 'Date de création', data: dateCreation, borderColor: 'rgba(75, 192, 192, 1)', fill: false },
+                { label: 'Nombre de facultés', data: facultes, borderColor: 'rgba(153, 102, 255, 1)', fill: false }
+            ]
+        },
+        options: {
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        wheel: {
+                            enabled: true
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'x'
+                    }
+                }
+            }
+        }
+    });
+   function adjustChartSize(chart, factor) {
+    chart.canvas.parentNode.style.width = `${chart.canvas.parentNode.offsetWidth * factor}px`;
+    chart.canvas.parentNode.style.height = `${chart.canvas.parentNode.offsetHeight * factor}px`;
+    chart.resize();
+}
+
+// Ajouter des écouteurs pour les boutons de zoom des graphiques
+document.getElementById('zoomInBarChart').addEventListener('click', () => adjustChartSize(barChart, 1.2));
+document.getElementById('zoomOutBarChart').addEventListener('click', () => adjustChartSize(barChart, 0.8));
+
+    // Ajouter les fonctionnalités de téléchargement
+    document.getElementById('downloadBarChart').addEventListener('click', function() {
+        const link = document.createElement('a');
+        link.href = barChart.toBase64Image();
+        link.download = 'barChart.png';
+        link.click();
+    });
+
+    document.getElementById('downloadPieChart').addEventListener('click', function() {
+        const link = document.createElement('a');
+        link.href = pieChart.toBase64Image();
+        link.download = 'pieChart.png';
+        link.click();
+    });
+// Ajouter des écouteurs pour les boutons de zoom des graphiques
+document.getElementById('zoomInPieChart').addEventListener('click', () => adjustChartSize(pieChart, 1.2));
+document.getElementById('zoomOutPieChart').addEventListener('click', () => adjustChartSize(pieChart, 0.8));
+
+    document.getElementById('downloadLineChart').addEventListener('click', function() {
+        const link = document.createElement('a');
+        link.href = lineChart.toBase64Image();
+        link.download = 'lineChart.png';
+        link.click();
+    });
+// Ajouter des écouteurs pour les boutons de zoom des graphiques
+document.getElementById('zoomInLineChart').addEventListener('click', () => adjustChartSize(lineChart, 1.2));
+document.getElementById('zoomOutLineChart').addEventListener('click', () => adjustChartSize(lineChart, 0.8));	
+
+
+            // Map
+            const map = L.map('map').setView([46.603354, 1.888334], 6); // Centered on France
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OpenStreetMap contributors' }).addTo(map);
+            data.forEach(univ => {
+                L.marker([univ.Latitude, univ.Longitude]).addTo(map)
+                 .bindPopup(`<b>${univ.Université}</b><br>- Date de création : ${univ.DateCreation}<br>- Nombre d'étudiants : ${univ.Etudiants}<br>- Nombre de facultés : ${univ.Facultes}<br>- Nombre de publications : ${univ.Publications}<br>- Classement national : ${univ.Classement}`)
+                 .openPopup();
+            });
+        }
+		
+		function displayTable(data) {
+            const tableContainer = document.getElementById('tableContainer');
+            const table = document.createElement('table');
+            const header = table.createTHead();
+            const row = header.insertRow();
+            const headers = ['Université', 'Date de Création', 'Nombre d\'Étudiants', 'Nombre de Facultés', 'Publications', 'Classement','Latitude','Longitude'];
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                row.appendChild(th);
+            });
+
+            const tbody = table.createTBody();
+            data.forEach(item => {
+                const row = tbody.insertRow();
+                Object.values(item).forEach(cellData => {
+                    const cell = row.insertCell();
+                    cell.textContent = cellData;
+                });
+            });
+
+            tableContainer.innerHTML = ''; // Clear existing content
+            tableContainer.appendChild(table);
+        }
+    </script>
+</body>
+</html>

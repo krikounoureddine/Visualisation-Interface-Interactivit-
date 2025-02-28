@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg" type="image/svg+xml">
+    <title>Graphiques Voyant Tools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .iframe-section, .table-section {
+            margin-bottom: 30px;
+        }
+
+        .iframe-section h2, .table-section h2 {
+            font-size: 1.4rem;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .iframe-section iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="iframe-container">
+        <h2>Visualisation Données Structurées</h2>
+    </div>
+    <div class="container">
+        <div class="iframe-section">
+            <h2>Lecteur Data Wrapper</h2>
+            <iframe title="Échantillon des universités dans le monde" aria-label="Interactive line chart" id="datawrapper-chart-0aXdD" src="https://datawrapper.dwcdn.net/0aXdD/2/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="403" data-external="1"></iframe>
+        </div>
+
+        <div class="table-section">
+            <h2>Affichage des Données CSV</h2>
+            <input type="file" id="csvFileInput" accept=".csv">
+            <table id="csvTable"></table>
+        </div>
+    </div>
+    <footer>
+        Graphiques générés à l'aide de <a href="https://www.datawrapper.de/" target="_blank">datawrapper</a>.
+    </footer>
+
+    <script>
+        document.getElementById('csvFileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                displayCSVTable(text);
+            };
+            reader.readAsText(file);
+        });
+
+        function displayCSVTable(csvData) {
+            const rows = csvData.split('\n');
+            const table = document.getElementById('csvTable');
+            table.innerHTML = '';
+
+            rows.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                const cells = row.split(',');
+
+                cells.forEach(cell => {
+                    const td = document.createElement(rowIndex === 0 ? 'th' : 'td');
+                    td.textContent = cell.trim();
+                    tr.appendChild(td);
+                });
+
+                table.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>

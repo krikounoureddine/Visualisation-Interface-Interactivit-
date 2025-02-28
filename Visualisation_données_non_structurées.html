@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/c3/Flag_of_France.svg" type="image/svg+xml">
+    <title>Rain Words Effect with Photos</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(to bottom, #87CEFA, #1E90FF);
+            color: #fff;
+            margin: 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #fff;
+            color: #1E90FF;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #87CEFA;
+        }
+        canvas {
+            border: 2px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .photo-grid {
+            display: flex;
+            flex-direction: column; /* Vertical arrangement */
+            align-items: center;
+            gap: 30px; /* More space between cards */
+            margin-top: 20px;
+        }
+        .card {
+            background: #fff;
+            color: #000;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            width: 100%; /* Full width */
+            max-width: 600px; /* Increased max width for larger cards */
+            overflow: hidden;
+            text-align: center;
+        }
+        .card img {
+            width: 100%; /* Fully cover the card's width */
+            height: auto;
+            display: block;
+        }
+        .card-title {
+            font-size: 22px; /* Larger title font size */
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .card-content {
+            padding: 15px; /* Increased padding for a better layout */
+        }
+		footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>Visualisation Données Non Structurées</h1>
+	<h2>Rain Words Effect  (la pluie texte mot par mot)</h2> 
+    <button onclick="startRain()">Make it Rain!</button>
+    <br>
+    <canvas id="rainCanvas" width="800" height="400"></canvas>
+
+<h2>Section des photos avec observable </h2> 
+    <!-- Section des photos avec cartes -->
+    <div class="photo-grid">
+        <div class="card">
+            <img src="images/Canada.PNG" alt="Canada">
+            <div class="card-content">
+                <div class="card-title">les universités en Canada</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="images/Chine1.PNG" alt="Chine">
+            <div class="card-content">
+                <div class="card-title">les universités en chine</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="images/fr1.PNG" alt="France">
+            <div class="card-content">
+                <div class="card-title">les universités en France</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="images/Rawanda.PNG" alt="Rwanda">
+            <div class="card-content">
+                <div class="card-title">les universités en Rwanda</div>
+            </div>
+        </div>
+    </div>
+	
+	<footer>
+        les photos générés à l'aide de <a href="https://observablehq.com/@observablehq/plot-image-dodge" target="_blank">observable</a>.
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('rainCanvas');
+        const ctx = canvas.getContext('2d');
+        let raindrops = [];
+        let animationFrame;
+
+        // Texte intégré utilisé automatiquement
+        const integratedText = `Université,Date de création
+Sorbonne Université,1257
+Université de Strasbourg,1621
+Université de Bordeaux,1441
+Université de Lyon,1896
+Université de Grenoble,1339
+Université de Lille,1562
+Université de Montpellier,1289
+Université de Toulouse,1229
+Université d'Aix-Marseille,1409
+Université de Rennes,1461
+Université Paris-Saclay,2015
+Université Côte d’Azur,1965`;
+
+        function startRain() {
+            const text = integratedText; // Utiliser le texte intégré
+            const lines = text.split('\n').slice(1); // Ignore la première ligne (headers)
+            
+            cancelAnimationFrame(animationFrame); // Stop any previous animations
+            raindrops = [];
+
+            lines.forEach(line => {
+                const [university, year] = line.split(',');
+                raindrops.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    speed: Math.random() * 5 + 2,
+                    word: `${university} (${year})`,
+                    opacity: Math.random() * 0.5 + 0.5,
+                });
+            });
+
+            animateRain();
+        }
+
+        function animateRain() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '16px Arial';
+
+            raindrops.forEach((drop, index) => {
+                // Utilisation alternée des couleurs rouge et verte
+                const color = index % 2 === 0 ? 'rgba(255, 0, 0, ' + drop.opacity + ')' : 'rgba(0, 255, 0, ' + drop.opacity + ')';
+                ctx.fillStyle = color;
+
+                ctx.fillText(drop.word, drop.x, drop.y);
+                drop.y += drop.speed;
+                if (drop.y > canvas.height) {
+                    drop.y = 0;
+                    drop.x = Math.random() * canvas.width;
+                }
+            });
+
+            animationFrame = requestAnimationFrame(animateRain);
+        }
+    </script>
+</body>
+</html>
