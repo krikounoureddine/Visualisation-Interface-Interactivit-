@@ -53,7 +53,7 @@ Une animation visuelle simulant une **pluie de mots dynamique**, créant une exp
 
 🔗 **1- Accéder à la page (Words):** [Voir l'effet animé](https://krikounoureddine.github.io/Visualisation/RainWordsEffect.html) 
 
-🔗 **2- Accéder à la page (Characters):** [Voir l'effet animé](https://krikounoureddine.github.io/Visualisation/RainWordsEffect.html) 
+🔗 **2- Accéder à la page (Characters):** [Voir l'effet animé](https://krikounoureddine.github.io/Visualisation-Interface-Interactivit-/Rain_Characters_Effect.html) 
 
 ---
 
